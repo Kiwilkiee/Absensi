@@ -20,24 +20,30 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'jabatan' => 'required',
             'password' => 'required',
+            'role' => 'required|exists:roles,name', // Pastikan role ada dalam tabel roles
         ]);
-
+    
         $user = User::create([
             'nama' => $request->nama,
             'email' => $request->email,
             'jabatan' => $request->jabatan,
             'password' => bcrypt($request->password),
+            'role' => $request->role,
         ]);
-
+    
+        // Assign role to the user
+        $user->assignRole($request->role);
+    
         return response()->json(['user' => $user], 201);
     }
+    
 
     public function update($id)
     {
         $user = User::findOrFail($id);
 
         $user->update([
-            'name' => request('name'),
+            'nama' => request('nama'),
             'email' => request('email'),
             'jabatan' => request('jabatan'),
             

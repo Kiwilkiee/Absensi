@@ -11,25 +11,46 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 class AuthController extends Controller
 {
     public function login(Request $request){
+        {
+            $credentials = $request->only('email', 'password');
+    
+            if (!$token = Auth::guard('api')->attempt($credentials)) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+                
 
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+            }
 
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-            $user = Auth::user();
-            $token = JWTAuth::fromUser($user);
-
+            $user = Auth::guard('api')->user();
+            $role = $user->roles->first()->name;
+    
             return response()->json([
-                'success'       => true,
-                'email'         => $user->email,
-                'jabatan'       => $user->jabatan,
-                'token'          => $token
-            ], 201);
+                'nama' => $user->nama,
+                'user_id' => $user->id,
+                'email' => $user->email,
+                'jabatan' => $user->jabatan,
+                'role' => $role,  
+                'token' => $token
+            ]);
+        }
+    
 
-            return response()->json(['error' => 'Data Tidak Di temukan Silahkan Cek Kembali'], 400);
-        } 
+        
+    }
+
+    public function logout(Request $request) {
+
+        Auth::logout();
+        
+       
+        return response()->json(['message' => 'Logged out successfully']);
+    }
+
+    public function logoutAll(Request $request) {
+
+        Auth::logout();
+        // $request->user()->tokens()->delete();
+        return response()->json(['message' => 'Logged out successfully']);
+        
     }
 
     

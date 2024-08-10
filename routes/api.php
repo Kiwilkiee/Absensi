@@ -13,7 +13,7 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
+|       
 | Here is where you can register API routes for your application. These
 | routes are loaded by the RouteServiceProvider and all of them will
 | be assigned to the "api" middleware group. Make something great!
@@ -28,19 +28,26 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::post('/login', [AuthController::class, 'login']);
 
+ROute::post('/logout', [AuthController::class, 'logout']);
+
 Route::get('dashboard', [DashboardController::class, 'index']);
 
 Route::resource('user', UserController::class);
 
 Route::post('absensi/masuk', [AbsensiController::class, 'absenMasuk']);
 
+Route::get('absensi', [AbsensiController::class, 'index']);
+
 Route::post('absensi/pulang', [AbsensiController::class, 'absenPulang']);
 
 Route::post('absensi/rekap', [AbsensiController::class, 'index']);
 
-// Route::middleware(['auth:sc'])->group(function () { 
+
+Route::group(['middleware' => ['jwt:auth']], function () {
     
-// });
+    
+
+ });
 
 
 

@@ -2,7 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AbsensiController;
-use App\Http\Controllers\KaryawanController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\Auth\AuthController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +18,13 @@ use App\Http\Controllers\KaryawanController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('auth.login');
+})->name('login');
 
 // web.php (routes)
-Route::resource('karyawan', KaryawanController::class);
+//Route::post('/login', [AuthController::class, 'login'])->name('login');
+
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
+Route::resource('user', userController::class);
 Route::post('absensi/masuk', [AbsensiController::class, 'absenMasuk']);
