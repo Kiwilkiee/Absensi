@@ -6,7 +6,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\AbsensiController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\HistoryController;
 
 
 /*
@@ -38,11 +38,14 @@ Route::post('absensi/masuk', [AbsensiController::class, 'absenMasuk']);
 
 Route::get('absensi', [AbsensiController::class, 'index']);
 
+Route::get('absensi/{user_id}', [AbsensiController::class, 'getAbsensiById']);    
+
 Route::post('absensi/pulang', [AbsensiController::class, 'absenPulang']);
 
-Route::post('absensi/rekap', [AbsensiController::class, 'index']);
+Route::get('absensi/rekap', [AbsensiController::class, 'index']);
 
-
+Route::get('history/{user_id}', [HistoryController::class, 'getAbsensiById']);
+ 
 Route::group(['middleware' => ['jwt:auth']], function () {
     
     

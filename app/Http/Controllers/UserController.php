@@ -7,6 +7,10 @@ use App\Models\User;
 
 class UserController extends Controller
 {
+    public function showProfile()
+    {
+        return view('profile.profile');
+    }
     public function index()
     {
         $users = User::all();
@@ -38,16 +42,38 @@ class UserController extends Controller
     }
     
 
-    public function update($id)
+    
+    public function update(Request $request, $id)
     {
         $user = User::findOrFail($id);
 
-        $user->update([
-            'nama' => request('nama'),
-            'email' => request('email'),
-            'jabatan' => request('jabatan'),
-            
+        // Validasi field yang ada dalam request
+        $request->validate([
+            'nama' => 'sometimes|required|max:100',
+            'email' => 'sometimes|required|email|unique:users,email,' . $user->id,
+            'jabatan' => 'sometimes|required',
+            'password' => 'sometimes|required',
         ]);
+
+        // Update hanya field yang ada dalam request
+        if ($request->filled('nama')) {
+            $user->nama = $request->nama;
+        }
+        if ($request->filled('email')) {
+            $user->email = $request->email;
+        }
+        if ($request->filled('jabatan')) {
+            $user->jabatan = $request->jabatan;
+        }
+        if ($request->filled('password')) {
+            $user->password = bcrypt($request->password);
+        }
+
+        $user->save();
+
+        return response()->json(['message' => 'User updated successfully', 'user' => $user]);
+    
+        
     }
 
     public function destroy($id)

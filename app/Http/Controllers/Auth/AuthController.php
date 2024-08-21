@@ -10,12 +10,17 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
+    public function index()
+    {
+        return view('auth.login');
+    }
+
     public function login(Request $request){
         {
             $credentials = $request->only('email', 'password');
     
             if (!$token = Auth::guard('api')->attempt($credentials)) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return response()->json(['error' => 'Password Atau Email Salah'], 401);
                 
 
             }
@@ -24,11 +29,9 @@ class AuthController extends Controller
             $role = $user->roles->first()->name;
     
             return response()->json([
-                'nama' => $user->nama,
-                'user_id' => $user->id,
-                'email' => $user->email,
-                'jabatan' => $user->jabatan,
-                'role' => $role,  
+                'status' => 'success',
+                'user' => $user,
+               
                 'token' => $token
             ]);
         }

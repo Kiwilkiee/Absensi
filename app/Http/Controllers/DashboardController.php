@@ -8,6 +8,11 @@ use App\Models\Absensi;
 
 class DashboardController extends Controller
 {
+
+    public function showDashboardPage() {
+        
+        return view('dashboard.dashboard');
+    }
     public function index()
     {
         $jumlahUser = User::count();

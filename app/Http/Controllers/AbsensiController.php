@@ -9,8 +9,26 @@ use Illuminate\Support\Facades\Log;
 
 class AbsensiController extends Controller
 {
+    public function showAbsensiPage()
+    {
+        return view('absensi.absensi');
+    }
+
+     public function getAbsensiById( $userId){
+
+        $absensis = Absensi::where('user_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($absensis);
+
+     }
+
+ 
     public function index(){
+
         $absensis = Absensi::all();
+        
         return response()->json($absensis);
     }
     public function absenMasuk(Request $request)
@@ -67,21 +85,19 @@ class AbsensiController extends Controller
     }
 
     public function getRekapByDate(Request $request)
-    {
-        $date = $request->date;
+{
+    $validatedData = $request->validate([
+        'date' => 'required|date',
+    ]);
 
-        // Validasi format tanggal
-        $validatedData = $request->validate([
-            'date' => 'required|date',
-        ]);
+    $date = $validatedData['date'];
 
-        // Mendapatkan data absensi berdasarkan tanggal
-        $absensis = Absensi::with('user')
-            ->whereDate('jam_masuk', $date)
-            ->orWhereDate('jam_pulang', $date)
-            ->get();
+    $absensis = Absensi::with('user')
+        ->whereDate('jam_masuk', $date)
+        ->orWhereDate('jam_pulang', $date)
+        ->get();
 
-        return response()->json($absensis);
-    }
+    return response()->json($absensis);
+}
 }
 
